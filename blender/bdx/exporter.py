@@ -840,6 +840,11 @@ class ExportBdx(Operator, ExportHelper):
             )
 
     def execute(self, context):
+        for ob in bpy.data.objects:
+            if hasattr(ob.data, "vertices"):
+                if (len(ob.data.vertices) > 32767):
+                    self.report({'ERROR_OUT_OF_MEMORY'}, "Object %s has %d vertices, which is more than the 32767 vertices supported!" % (ob.name, len(ob.data.vertices)))
+                    return {'FINISHED'}
         return export(context, self.filepath, self.scene_name, self.exprun)
 
 
